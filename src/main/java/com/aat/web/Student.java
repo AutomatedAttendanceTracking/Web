@@ -12,7 +12,8 @@ public class Student {
 	  @Parent private Key<Group> theGroup;
 	  @Id public Long id;
 	  private Long studentNumber;
-	  private Long personalQRCode;
+	  private int personalQRCode;
+	  private Date qrCodeTimeStamp;
 
 	  /**
 	   * Simple constructor just sets the date
@@ -42,11 +43,16 @@ public class Student {
 		  return this.studentNumber;
 	  }
 	  
-	  public Long getPersonalQRCode() {
+	  public int getPersonalQRCode() {
 		  return this.personalQRCode;
 	  }
 	  
-	  public void setPersonalQRCode(Long code) {
+	  public void setPersonalQRCode(int code) {
 		  this.personalQRCode = code;
+		  this.qrCodeTimeStamp = new Date();
+	  }
+	  
+	  public Date getQrCodeTimeStamp() {
+		  return this.qrCodeTimeStamp;
 	  }
 }

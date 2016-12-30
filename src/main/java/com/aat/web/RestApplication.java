@@ -17,6 +17,7 @@ public class RestApplication extends Application{
         router.attach("/students", StudentResource.class);
         router.attach("/group/{groupNumber}", GroupResource.class);
         router.attach("/groups", GroupResource.class);
+        router.attach("/qrcode/{studentNumber}", QRCodeResource.class);
 
         return router;
     }

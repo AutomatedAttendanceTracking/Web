@@ -30,7 +30,7 @@ public class GroupResource extends ServerResource{
 		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
 		Group group = null;
 		for (Group gr: groupList) {
-			if (gr.getGroupNumber()==groupNumber) {
+			if (gr.getGroupNumber().equals(groupNumber)) {
 				group = gr;
 			}
 		}

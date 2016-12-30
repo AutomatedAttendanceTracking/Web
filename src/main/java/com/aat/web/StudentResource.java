@@ -37,7 +37,7 @@ public class StudentResource extends ServerResource {
 		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
 		Group group = null;
 		for (Group gr: groupList) {
-			if (gr.getGroupNumber()==groupNumber) {
+			if (gr.getGroupNumber().equals(groupNumber)) {
 				group = gr;
 			}
 		}
@@ -49,7 +49,7 @@ public class StudentResource extends ServerResource {
 		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
 		Student student = null;
 		for (Student st: studentList) {
-			if (st.getStudentNumber() == studentNumber) {
+			if (st.getStudentNumber().equals(studentNumber)) {
 				student = st;
 			}
 		}
