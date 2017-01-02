@@ -1,5 +1,6 @@
 package com.aat.web;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,21 +22,23 @@ public class Student {
 	  private int numberTotalExercise;
 	  private List<Date> participations;
 
-	  /**
-	   * Simple constructor just sets the date
-	   **/
-	  public Student(Group group, Long studentNumber) {
+	  public Student() {
+		  studentNumber = -1L;
+		  this.participations = new ArrayList<>();
+	  }
+	  public Student(Long group, Long studentNumber) {
 		  if( group != null ) {
-			  this.theGroup = Key.create(group);  // Creating the Ancestor key
+			  this.theGroup = Key.create(Group.class, group.toString());  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }
 		  this.studentNumber = studentNumber;
+		  this.participations = new ArrayList<>();
 	  }
 	  
-	  public void setGroup(Group group) {
+	  public void setGroup(Long group) {
 		  if( group != null ) {
-			  this.theGroup = Key.create(group);  // Creating the Ancestor key
+			  this.theGroup = Key.create(Group.class, group.toString());  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }

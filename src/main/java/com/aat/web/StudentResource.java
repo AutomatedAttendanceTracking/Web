@@ -54,14 +54,14 @@ public class StudentResource extends ServerResource {
 			}
 		}
 		if(student == null) {
-			student = new Student(group, studentNumber);
+			student = new Student(groupNumber, studentNumber);
 			//save new Student
 			ObjectifyService.ofy().save().entity(student).now();
 			return "Student with student number '"+studentNumber+"' was created and placed in group '"+groupNumber+"'";
 		} else {
 			//place student in the right group
 			Key<Group> oldKey = student.getGroup();
-			student.setGroup(group);
+			student.setGroup(groupNumber);
 			return "Student was moved from group '"+oldKey.getName()+"' to group '"+groupNumber+"'";
 		}
 	}

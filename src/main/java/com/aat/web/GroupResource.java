@@ -25,7 +25,7 @@ public class GroupResource extends ServerResource{
 	
 	@Put
 	public String createGroup() {
-		Long groupNumber = Long.parseLong(getAttribute("groupKey"));
+		Long groupNumber = Long.parseLong(getAttribute("groupNumber"));
 		//exist group?
 		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
 		Group group = null;
@@ -37,7 +37,7 @@ public class GroupResource extends ServerResource{
 		if(group!=null) {
 			return "Group with group number'"+groupNumber+"' already exists.";
 		}
-		ObjectifyService.ofy().save().entity(new Group(groupNumber));
+		ObjectifyService.ofy().save().entity(new Group(groupNumber)).now();
 		return "Group with group number '"+groupNumber+"' created.";
 	}
 }

@@ -13,13 +13,15 @@ public class RestApplication extends Application{
         Router router = new Router(getContext());
 
         // Defines different routes
-        router.attach("/signup/{studentNumber}/{groupNumber}", StudentResource.class);
-        router.attach("/students", StudentResource.class);
-        router.attach("/group/{groupNumber}", GroupResource.class);
+        //GET
         router.attach("/groups", GroupResource.class);
+        router.attach("/students", StudentResource.class);
+        router.attach("/participation/{studentNumber}", ParticipationResource.class);
+        //PUT
+        router.attach("/group/{groupNumber}", GroupResource.class);
+        router.attach("/signup/{studentNumber}/{groupNumber}", StudentResource.class);
         router.attach("/qrcode/new/{studentNumber}", QRCodeCreationResource.class);
         router.attach("/qrcode/valid/{studentNumber}/{time}/{randNumber}", QRCodeValidationResource.class);
-        router.attach("/participation/{studentNumber}", ParticipationResource.class);
 
         return router;
     }
