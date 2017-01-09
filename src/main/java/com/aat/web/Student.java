@@ -16,29 +16,33 @@ public class Student {
 	  
 	  @Parent private Key<Group> theGroup;
 	  @Id public Long id;
-	  private Long studentNumber;
+	  private int studentNumber;
 	  private List<Pair<Date, Integer>> qrCodes;
 	  private boolean bonus;
 	  private int numberTotalExercise;
 	  private List<Date> participations;
 
 	  public Student() {
-		  studentNumber = -1L;
+		  studentNumber = -1;
 		  this.participations = new ArrayList<>();
+		  this.bonus= false;
+		  this.qrCodes = new ArrayList<>();
 	  }
-	  public Student(Long group, Long studentNumber) {
-		  if( group != null ) {
-			  this.theGroup = Key.create(Group.class, group.toString());  // Creating the Ancestor key
+	  public Student(int group, int studentNumber) {
+		  if( group != 0 ) {
+			  this.theGroup = Key.create(Group.class, group);  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }
 		  this.studentNumber = studentNumber;
 		  this.participations = new ArrayList<>();
+		  this.bonus = false;
+		  this.qrCodes = new ArrayList<>();
 	  }
 	  
-	  public void setGroup(Long group) {
-		  if( group != null ) {
-			  this.theGroup = Key.create(Group.class, group.toString());  // Creating the Ancestor key
+	  public void setGroup(int group) {
+		  if( group != 0 ) {
+			  this.theGroup = Key.create(Group.class, group);  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }
@@ -48,7 +52,7 @@ public class Student {
 		  return theGroup;
 	  }
 	  
-	  public Long getStudentNumber() {
+	  public int getStudentNumber() {
 		  return this.studentNumber;
 	  }
 	  
@@ -66,7 +70,7 @@ public class Student {
 	  
 	  public Pair<Date, Integer> addPersonalQRCode(int code) {
 		  Pair<Date, Integer> qrCode = new Pair<>(new Date(), code);
-		  this.qrCodes.add(new Pair<Date, Integer>(new Date(), code));
+		  this.qrCodes.add(qrCode);
 		  return qrCode;
 	  }
 	  
@@ -86,6 +90,7 @@ public class Student {
 		  calLast.setTime(lastParticipation);
 		  if (calLast.before(calNow) && calLast.WEEK_OF_YEAR != calNow.WEEK_OF_YEAR) {
 			  this.participations.add(calNow.getTime());
+			  this.computeBonus();
 			  return "Participation saved.";
 		  }
 		  return "Student has already participated this week.";

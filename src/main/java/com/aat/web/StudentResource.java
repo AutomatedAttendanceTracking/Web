@@ -1,13 +1,17 @@
 package com.aat.web;
 
+import java.sql.Date;
 import java.util.List;
 
+import org.restlet.representation.Representation;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.util.jackson.ObjectifyJacksonModule;
 
 public class StudentResource extends ServerResource {
 	
@@ -19,6 +23,9 @@ public class StudentResource extends ServerResource {
 			result += "\t<student id="+st.id+">\n";
 			result += "\t\t<student_number>"+st.getStudentNumber()+"</student_number>\n";
 			result += "\t\t<group>"+st.getGroup().getName()+"</group>\n";
+			result += "\t\t<bonus>"+st.getBonus()+"</bonus>\n";
+			result += "\t\t<number_participations>"+st.getParticipations().size()+"<number_participations>\n";
+			result += "\t\t<number_qr_codes>"+st.getQrCodes().size()+"<number_qr_codes>\n";
 			result += "\t</student>\n";
 		}
 		result += "</studentlist>";
@@ -27,17 +34,17 @@ public class StudentResource extends ServerResource {
 	
 	@Put
 	public String signUpStudent() {
-		Long studentNumber = Long.parseLong(getAttribute("studentNumber"));
-		Long groupNumber = Long.parseLong(getAttribute("groupNumber"));
-		if(groupNumber==null || studentNumber == null) {
-			return "Group number '"+groupNumber+"' or Student '"+studentNumber+"' number is null"; 
+		int studentNumber = Integer.parseInt(getAttribute("studentNumber"));
+		int groupNumber = Integer.parseInt(getAttribute("groupNumber"));
+		if(groupNumber==0 || studentNumber == 0) {
+			return "Group number '"+groupNumber+"' or Student '"+studentNumber+"' number is 0"; 
 		}
 		
 		//exist group?
 		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
 		Group group = null;
 		for (Group gr: groupList) {
-			if (gr.getGroupNumber().equals(groupNumber)) {
+			if (gr.getGroupNumber() == groupNumber) {
 				group = gr;
 			}
 		}
@@ -49,7 +56,7 @@ public class StudentResource extends ServerResource {
 		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
 		Student student = null;
 		for (Student st: studentList) {
-			if (st.getStudentNumber().equals(studentNumber)) {
+			if (st.getStudentNumber() == studentNumber) {
 				student = st;
 			}
 		}
@@ -64,6 +71,13 @@ public class StudentResource extends ServerResource {
 			student.setGroup(groupNumber);
 			return "Student was moved from group '"+oldKey.getName()+"' to group '"+groupNumber+"'";
 		}
+	}
+	
+	@Delete
+	public String clearStudents() {
+		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
+		ObjectifyService.ofy().delete().entities(studentList).now();
+		return "Students deleted";
 	}
 	
 }

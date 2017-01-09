@@ -12,7 +12,7 @@ public class QRCodeValidationResource extends ServerResource{
 
 	@Put
 	public String saveParticipation() {
-		Long studentNumber = Long.parseLong(getAttribute("studentNumber"));
+		int studentNumber = Integer.parseInt(getAttribute("studentNumber"));
 		Long milliseconds = Long.parseLong(getAttribute("time"));
 		int code = Integer.parseInt(getAttribute("randNumber"));
 		
@@ -20,7 +20,7 @@ public class QRCodeValidationResource extends ServerResource{
 		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
 		Student student = null;
 		for (Student st: studentList) {
-			if(st.getStudentNumber().equals(studentNumber)) {
+			if(st.getStudentNumber() == studentNumber) {
 				student = st;
 			}
 		}
@@ -32,6 +32,7 @@ public class QRCodeValidationResource extends ServerResource{
 			student.addParticipation(qrCode.getLeft());
 			student.deleteOldQrCodes(qrCode);
 		}
+		ObjectifyService.ofy().save().entity(student).now();
 		return "Participation saved.";
 	}
 }

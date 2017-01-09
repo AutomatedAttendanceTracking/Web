@@ -2,7 +2,9 @@ package com.aat.web;
 
 import java.util.List;
 
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
 
@@ -23,14 +25,14 @@ public class GroupResource extends ServerResource{
 		return result;
 	}
 	
-	@Put
+	@Post
 	public String createGroup() {
-		Long groupNumber = Long.parseLong(getAttribute("groupNumber"));
+		int groupNumber = Integer.parseInt(getAttribute("groupNumber"));
 		//exist group?
 		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
 		Group group = null;
 		for (Group gr: groupList) {
-			if (gr.getGroupNumber().equals(groupNumber)) {
+			if (gr.getGroupNumber() == groupNumber) {
 				group = gr;
 			}
 		}
@@ -39,5 +41,12 @@ public class GroupResource extends ServerResource{
 		}
 		ObjectifyService.ofy().save().entity(new Group(groupNumber)).now();
 		return "Group with group number '"+groupNumber+"' created.";
+	}
+	
+	@Delete
+	public String clearGroups() {
+		List<Group> groupList = ObjectifyService.ofy().load().type(Group.class).list();
+		ObjectifyService.ofy().delete().entities(groupList).now();
+		return "Groups deleted";
 	}
 }

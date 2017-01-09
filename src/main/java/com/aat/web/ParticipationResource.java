@@ -12,11 +12,11 @@ public class ParticipationResource extends ServerResource {
 	
 	@Get
 	public String representParticipations() {
-		Long studentNumber = Long.parseLong(getAttribute("studentNumber"));
+		int studentNumber = Integer.parseInt(getAttribute("studentNumber"));
 		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
 		Student student = null;
 		for (Student st: studentList) {
-			if(st.getStudentNumber().equals(studentNumber)) {
+			if(st.getStudentNumber() == studentNumber) {
 				student = st;
 			}
 		}

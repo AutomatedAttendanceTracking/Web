@@ -6,17 +6,17 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class Group {
 	@Id public Long id;
-	private Long groupNumber;
+	private int groupNumber;
 	
 	
 	public Group() {
-		this.groupNumber = -1L;
+		this.groupNumber = -1;
 	}
-	public Group(Long groupNumber) {
+	public Group(int groupNumber) {
 		this.groupNumber = groupNumber;
 	}
 	
-	public Long getGroupNumber() {
+	public int getGroupNumber() {
 		return this.groupNumber;
 	}
 }
