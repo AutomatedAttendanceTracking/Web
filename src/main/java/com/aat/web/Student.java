@@ -17,32 +17,29 @@ public class Student {
 	  @Parent private Key<Group> theGroup;
 	  @Id public Long id;
 	  private int studentNumber;
-	  private List<Pair<Date, Integer>> qrCodes;
 	  private boolean bonus;
-	  private int numberTotalExercise;
+	  private int numberTotalExercise = 10;
 	  private List<Date> participations;
 
 	  public Student() {
 		  studentNumber = -1;
 		  this.participations = new ArrayList<>();
 		  this.bonus= false;
-		  this.qrCodes = new ArrayList<>();
 	  }
 	  public Student(int group, int studentNumber) {
 		  if( group != 0 ) {
-			  this.theGroup = Key.create(Group.class, group);  // Creating the Ancestor key
+			  this.theGroup = Key.create(Group.class, Integer.toString(group));  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }
 		  this.studentNumber = studentNumber;
 		  this.participations = new ArrayList<>();
 		  this.bonus = false;
-		  this.qrCodes = new ArrayList<>();
 	  }
 	  
 	  public void setGroup(int group) {
 		  if( group != 0 ) {
-			  this.theGroup = Key.create(Group.class, group);  // Creating the Ancestor key
+			  this.theGroup = Key.create(Group.class, Integer.toString(group));  // Creating the Ancestor key
 		  } else {
 		      this.theGroup = Key.create(Group.class, "default");
 		  }
@@ -56,22 +53,12 @@ public class Student {
 		  return this.studentNumber;
 	  }
 	  
-	  public List<Pair<Date,Integer>> getQrCodes() {
-		  return this.qrCodes;
-	  }
-	  
 	  public boolean getBonus() {
 		  return this.bonus;
 	  }
 	  
 	  public List<Date> getParticipations() {
 		  return this.participations;
-	  }
-	  
-	  public Pair<Date, Integer> addPersonalQRCode(int code) {
-		  Pair<Date, Integer> qrCode = new Pair<>(new Date(), code);
-		  this.qrCodes.add(qrCode);
-		  return qrCode;
 	  }
 	  
 	  public void computeBonus() {
@@ -86,20 +73,16 @@ public class Student {
 		  Calendar calNow = Calendar.getInstance();
 		  Calendar calLast = Calendar.getInstance();
 		  calNow.setTime(timeStamp);
-		  Date lastParticipation = this.participations.get(this.participations.size()-1);
-		  calLast.setTime(lastParticipation);
-		  if (calLast.before(calNow) && calLast.WEEK_OF_YEAR != calNow.WEEK_OF_YEAR) {
+		  Date lastParticipation = null;
+		  if(!this.participations.isEmpty()) {
+			  lastParticipation = this.participations.get(this.participations.size()-1);
+			  calLast.setTime(lastParticipation);
+		  }
+		  if (lastParticipation == null || (calLast.before(calNow) && calLast.WEEK_OF_YEAR != calNow.WEEK_OF_YEAR)) {
 			  this.participations.add(calNow.getTime());
 			  this.computeBonus();
 			  return "Participation saved.";
 		  }
 		  return "Student has already participated this week.";
-	  }
-	  
-	  public void deleteOldQrCodes(Pair<Date, Integer> qrCode) {
-		  int index = this.qrCodes.indexOf(qrCode);
-		  for(int i=0; i<=index; i++) {
-			  this.qrCodes.remove(i);
-		  }
 	  }
 }

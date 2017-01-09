@@ -1,9 +1,7 @@
 package com.aat.web;
 
-import java.sql.Date;
 import java.util.List;
 
-import org.restlet.representation.Representation;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Put;
@@ -11,7 +9,6 @@ import org.restlet.resource.ServerResource;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.util.jackson.ObjectifyJacksonModule;
 
 public class StudentResource extends ServerResource {
 	
@@ -20,12 +17,14 @@ public class StudentResource extends ServerResource {
 		String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<studentlist>\n";
 		List<Student> studentList = ObjectifyService.ofy().load().type(Student.class).list();
 		for (Student st: studentList) {
+			Key<Student> key = Key.create(Student.class, Integer.toString(st.getStudentNumber()));
+			List<QRCode> qrCodes = ObjectifyService.ofy().load().type(QRCode.class).ancestor(key).list();
 			result += "\t<student id="+st.id+">\n";
 			result += "\t\t<student_number>"+st.getStudentNumber()+"</student_number>\n";
 			result += "\t\t<group>"+st.getGroup().getName()+"</group>\n";
 			result += "\t\t<bonus>"+st.getBonus()+"</bonus>\n";
 			result += "\t\t<number_participations>"+st.getParticipations().size()+"<number_participations>\n";
-			result += "\t\t<number_qr_codes>"+st.getQrCodes().size()+"<number_qr_codes>\n";
+			result += "\t\t<number_qr_codes>"+qrCodes.size()+"<number_qr_codes>\n";
 			result += "\t</student>\n";
 		}
 		result += "</studentlist>";

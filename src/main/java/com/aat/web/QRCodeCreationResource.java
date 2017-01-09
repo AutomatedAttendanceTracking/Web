@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 
+import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
@@ -13,6 +14,20 @@ import com.googlecode.objectify.ObjectifyService;
 
 public class QRCodeCreationResource extends ServerResource{
 
+	@Get
+	public String representQRCodes() {
+		String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<qrcodelist>\n";
+		List<QRCode> qrCodes = ObjectifyService.ofy().load().type(QRCode.class).list();
+		for (QRCode qr: qrCodes) {
+			result += "\t<qrcode id="+qr.id+">\n";
+			result += "\t\t<timestamp>"+qr.getTimestamp()+"</timestamp>\n";
+			result += "\t\t<random_value>"+qr.getRandValue()+"</random_value>\n";
+			result += "\t</qrcode>\n";
+		}
+		result += "</qrcodelist>";
+		return result;
+	}
+	
 	@Post
 	public String createQRCode() {
 		int studentNumber = Integer.parseInt(getAttribute("studentNumber"));
@@ -33,8 +48,8 @@ public class QRCodeCreationResource extends ServerResource{
 		} catch (NoSuchAlgorithmException e) {
 			return "Creating random number failed."+e;
 		}
-		Pair<Date, Integer> qrCode = student.addPersonalQRCode(randValue);
-		ObjectifyService.ofy().save().entity(student).now();
-		return "Creation successful. QrCode(<time in milliseconds>, <randNumber>): "+qrCode.getLeft().getTime()+","+qrCode.getRight()+";"+student.getQrCodes().size();
+		QRCode qrCode = new QRCode(student.getStudentNumber(), new Date(), randValue);
+		ObjectifyService.ofy().save().entity(qrCode).now();
+		return "Creation successful. QrCode(<time in milliseconds>, <randNumber>): "+qrCode.getTimestamp().getTime()+","+qrCode.getRandValue();
 	}
 }
