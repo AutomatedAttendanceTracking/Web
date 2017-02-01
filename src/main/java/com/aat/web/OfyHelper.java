@@ -34,6 +34,7 @@ public class OfyHelper implements ServletContextListener {
     ObjectifyService.register(Group.class);
     ObjectifyService.register(Student.class);
     ObjectifyService.register(QRCode.class);
+    ObjectifyService.register(Participation.class);
   }
 
   public void contextDestroyed(ServletContextEvent event) {

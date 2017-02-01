@@ -42,14 +42,9 @@ public class QRCodeCreationResource extends ServerResource{
 		if(student == null) {
 			return "Student with student number '"+studentNumber+"' could not be found.";
 		}
-		try {
-			SecureRandom random = SecureRandom.getInstanceStrong();
-			randValue = random.nextInt();
-		} catch (NoSuchAlgorithmException e) {
-			return "Creating random number failed."+e;
-		}
-		QRCode qrCode = new QRCode(student.getStudentNumber(), new Date(), randValue);
+		int random = (int)((Math.random()*200000)+10000);
+		QRCode qrCode = new QRCode(student.getStudentNumber(), new Date(), random);
 		ObjectifyService.ofy().save().entity(qrCode).now();
-		return "Creation successful. QrCode(<time in milliseconds>, <randNumber>): "+qrCode.getTimestamp().getTime()+","+qrCode.getRandValue();
+		return student.getStudentNumber()+","+qrCode.getTimestamp().getTime()+"/"+qrCode.getRandValue();
 	}
 }

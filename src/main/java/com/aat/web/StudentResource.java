@@ -19,11 +19,11 @@ public class StudentResource extends ServerResource {
 		for (Student st: studentList) {
 			Key<Student> key = Key.create(Student.class, Integer.toString(st.getStudentNumber()));
 			List<QRCode> qrCodes = ObjectifyService.ofy().load().type(QRCode.class).ancestor(key).list();
+			List<Participation> participations = ObjectifyService.ofy().load().type(Participation.class).ancestor(key).list();
 			result += "\t<student id="+st.id+">\n";
 			result += "\t\t<student_number>"+st.getStudentNumber()+"</student_number>\n";
 			result += "\t\t<group>"+st.getGroup().getName()+"</group>\n";
-			result += "\t\t<bonus>"+st.getBonus()+"</bonus>\n";
-			result += "\t\t<number_participations>"+st.getParticipations().size()+"<number_participations>\n";
+			result += "\t\t<number_participations>"+participations.size()+"<number_participations>\n";
 			result += "\t\t<number_qr_codes>"+qrCodes.size()+"<number_qr_codes>\n";
 			result += "\t</student>\n";
 		}

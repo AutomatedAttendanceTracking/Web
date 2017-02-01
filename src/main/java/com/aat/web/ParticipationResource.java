@@ -7,6 +7,7 @@ import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
 public class ParticipationResource extends ServerResource {
@@ -25,10 +26,12 @@ public class ParticipationResource extends ServerResource {
 			return "Student number does not exist.";
 		}
 		String result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<participations>\n";
-		for (Date d: student.getParticipations()) {
+		Key<Student> key = Key.create(Student.class, Integer.toString(student.getStudentNumber()));
+		List<Participation> participations = ObjectifyService.ofy().load().type(Participation.class).ancestor(key).list();
+		for (Participation p: participations) {
 			result += "\t<exercise>\n";
-			result += "\t\t<date_milliseconds>"+d.getTime()+"</data_milliseconds>\n";
-			result += "\t\t<date_string>"+d.toString()+"</date_string>\n";
+			result += "\t\t<date_milliseconds>"+p.getDate().getTime()+"</data_milliseconds>\n";
+			result += "\t\t<date_string>"+p.getDate().toString()+"</date_string>\n";
 			result += "\t</exercise>\n";
 		}
 		result += "</participations>";
@@ -36,9 +39,11 @@ public class ParticipationResource extends ServerResource {
 	}
 	
 	@Delete
-	public String deleteQrCodes() {
+	public String deleteQrCodesParticipations() {
 		List<QRCode> qrCodes = ObjectifyService.ofy().load().type(QRCode.class).list();
 		ObjectifyService.ofy().delete().entities(qrCodes).now();
-		return "QRCodes deleted";
+		List<Participation> parti = ObjectifyService.ofy().load().type(Participation.class).list();
+		ObjectifyService.ofy().delete().entities(parti).now();
+		return "QRCodes/Participations deleted";
 	}
 }
